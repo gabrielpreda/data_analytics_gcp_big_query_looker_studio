@@ -1,9 +1,8 @@
 # Objectives
 
 - 📊 Analyze and process large-scale data with BigQuery
-- 🛠️ Build AI-assisted BigQuery workflows and agents
-- 🧩 Design multi-agent systems
 - 📈 Create interactive analytics dashboards with BigQuery and Looker Studio
+- 🛠️ Use Gemini to assist in BigQuery and Build an AI-assisted BigQuery Agent 
 
 # Project setup: BigQuery and Looker Studio
 
