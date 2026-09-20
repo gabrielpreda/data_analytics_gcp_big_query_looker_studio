@@ -1,93 +1,158 @@
-# BigQuery notebooks and data analytics
+# BigQuery notebooks
 
-This chapter covers notebooks as an exploratory analytics environment. Notebooks complement SQL scripts and Looker Studio rather than replacing them.
+This folder contains Jupyter notebooks that query BigQuery, load results into pandas DataFrames, and create visualizations with matplotlib.
 
-## Learning objectives
+The notebooks combine:
 
-By the end of this chapter, you should be able to:
+- GoogleSQL for querying data
+- Python for analysis and calculations
+- pandas for local tabular analysis
+- matplotlib for charts
+- BigQuery tables and views for reusable results
 
-- Combine SQL, Python, narrative text, and visualizations.
-- Explore a BigQuery table with BigQuery DataFrames.
-- Decide when to use SQL and when to use Python.
-- Create a small analytical visualization.
-- Save a derived result back to BigQuery.
+## Notebooks
 
-## Notebook workflow
+### USA Names
+
+[usa_names_analysis.ipynb](usa_names_analysis.ipynb) uses the public table:
 
 ```text
-question → SQL exploration → Python analysis → visualization → validated result
+bigquery-public-data.usa_names.usa_1910_current
 ```
 
-Start with one notebook. The USA Names dataset is the simplest starting point; Cymbal Pets is the best business example.
+The notebook:
 
-## Suggested USA Names notebook
+- Inspects the table schema and row count
+- Calculates total births and unique names by year
+- Finds the most popular names
+- Plots selected name trends over time
+- Compares births and unique names by state
+- Optionally writes the yearly result to a BigQuery table
 
-Tasks:
+This notebook can be run without creating a source dataset because the USA Names table is public. Query jobs still use your Google Cloud project as the billing project.
 
-1. Query the public USA Names table.
-2. Inspect row counts, year range, and missing values.
-3. Calculate total births by year and state.
-4. Identify the most popular names.
-5. Plot a time series for selected names.
-6. Compare two states or genders.
+### Cymbal Pets
 
-Keep the notebook focused on exploration. The final reusable SQL should still become a view or table in BigQuery.
+[cymbal_pets_analysis.ipynb](cymbal_pets_analysis.ipynb) uses the tables created by the [Cymbal Pets module](../cymbal_pets/README.md):
 
-## Suggested Cymbal Pets notebook
+```text
+cymbal_pets.customers
+cymbal_pets.orders
+cymbal_pets.order_items
+cymbal_pets.products
+```
 
-Tasks:
+The notebook:
 
-1. Query `customer_analytics_vw` and `product_analytics_vw`.
-2. Inspect revenue and order distributions.
-3. Identify high-value customers.
-4. Compare categories and states.
-5. Create one chart with Python.
-6. Write a small customer-segment result back to BigQuery.
+- Checks that the source tables exist
+- Creates or replaces customer and product analytical views
+- Calculates customer metrics
+- Analyzes revenue by state
+- Analyzes revenue and units sold by product category
+- Identifies products with low inventory and recorded sales
+- Optionally writes customer segments to BigQuery
 
-## SQL and Python together
+Complete the Cymbal Pets loading instructions before opening this notebook.
 
-Use this division of responsibilities:
+## Requirements
 
-- Use SQL for filtering, joining, aggregating, and reusable transformations.
-- Use Python for exploratory calculations, statistical analysis, and custom visualizations.
-- Keep large data in BigQuery instead of downloading it unnecessarily.
-- Push final business logic back into views or tables when it must be reused.
+You need:
 
-## BigQuery DataFrames
+- A Google Cloud project with billing enabled
+- The BigQuery API enabled
+- Permission to create query jobs in the project
+- Permission to read the source tables
+- Permission to create views and tables in the destination dataset when using the Cymbal Pets notebook
+- A Python notebook environment such as BigQuery Studio, Jupyter, or Colab
 
-BigQuery DataFrames provides a pandas-like interface that executes work against BigQuery. It is useful when you know Python but are not ready to write every transformation in GoogleSQL.
+The notebooks install these Python packages in their first cell:
 
-Try these operations:
+```text
+google-cloud-bigquery
+db-dtypes
+pandas
+matplotlib
+```
 
-- Reading a BigQuery table.
-- Selecting and filtering columns.
-- Grouping and aggregating.
-- Plotting a result.
-- Writing a result to a BigQuery table.
+## Authentication and project configuration
 
-DataFrames do not remove the need to understand SQL, data grain, query cost, or permissions.
+The notebooks create a BigQuery client using one of these environment variables:
 
-## Notebook visualization versus Looker Studio
+```text
+GOOGLE_CLOUD_PROJECT
+BIGQUERY_PROJECT
+```
 
-| Use a notebook when | Use Looker Studio when |
-| --- | --- |
-| Exploring an unfamiliar dataset | Sharing a dashboard with others |
-| Testing an analytical idea | Providing filters and recurring reports |
-| Performing statistical analysis | Presenting governed KPIs |
-| Building a one-time visualization | Supporting business users |
+Set one of them before running the notebook if the environment does not already provide the active project.
 
-## Optional extensions
+For local development, authenticate with Application Default Credentials:
 
-These topics are optional extensions:
+```bash
+gcloud auth application-default login
+```
 
-- BigQuery ML
-- Forecasting
-- Model evaluation
-- Geospatial Python libraries
-- Automated notebook execution
-- Production notebook orchestration
+In Cloud Shell, the Google Cloud environment is normally already authenticated. Authorize Cloud Shell if prompted.
+
+## Running a notebook
+
+1. Open the notebook in BigQuery Studio, Jupyter, or Colab.
+2. Select a Python kernel or runtime.
+3. Set the project environment variable if necessary.
+4. Run the package-installation cell.
+5. Run the remaining cells from top to bottom.
+6. Review the query results and charts.
+
+The Cymbal Pets notebook creates these views as part of its normal workflow:
+
+```text
+cymbal_pets.customer_analytics_vw
+cymbal_pets.product_analytics_vw
+```
+
+## Writing results to BigQuery
+
+The final write cells are disabled by default. Each notebook defines:
+
+```python
+WRITE_RESULTS = False
+```
+
+Change it to `True` only when you want to create or replace the destination table. The destination table names are:
+
+```text
+usa_names.births_by_year_notebook
+cymbal_pets.customer_segments_notebook
+```
+
+Make sure the destination dataset exists and that your account has permission to create or replace tables before enabling result writing.
+
+## SQL and Python responsibilities
+
+The notebooks use BigQuery for filtering, joining, aggregating, and reading the source data. They use pandas for smaller result sets and Python-based calculations or visualizations.
+
+Keep large source data in BigQuery. Download only the result needed for local analysis, and check the query size before running expensive queries.
+
+Reusable transformations should remain in BigQuery views or tables. Notebook-specific exploration and charts can remain in Python cells.
+
+## Notebook analysis and Looker Studio
+
+Use the notebooks to explore data and test analytical ideas. Use the corresponding Looker Studio examples to share recurring dashboards:
+
+- [USA Names dashboard](../looker_studio_usa_names/README.md)
+- [Cymbal Pets dashboard](../looker_studio_cymbal_pets/README.md)
+
+The notebooks can create or inspect the same analytical views used by the dashboards.
+
+## Next steps
+
+- Add filters for state, gender, category, or date.
+- Create a monthly revenue analysis for Cymbal Pets.
+- Save a notebook result and connect it to Looker Studio.
+- Add BigQuery DataFrames as an alternative Python interface.
+- Use Gemini in BigQuery to generate one of the SQL queries, then validate it against the notebook result.
 
 ## Further reading
 
 - [Introduction to BigQuery notebooks](https://cloud.google.com/bigquery/docs/notebooks-introduction)
-- [BigQuery DataFrames](https://cloud.google.com/bigquery/docs/dataframes-introduction)
+- [BigQuery Python client libraries](https://cloud.google.com/bigquery/docs/reference/libraries)
+- [Application Default Credentials](https://cloud.google.com/docs/authentication/provide-credentials-adc)
