@@ -14,7 +14,7 @@ The steps below create a Google Cloud project, connect it to billing, enable the
 
 1. Sign in to the [Google Cloud Console](https://console.cloud.google.com/).
 2. Open **IAM & Admin → Manage resources** and click **Create project**.
-3. Enter a project name, for example `da_bq_la`.
+3. Enter a project name, for example `da-bq-la`.
 4. Choose the organization or folder if your account belongs to one. For a personal account, select **No organization** when that option is available.
 5. Click **Create**.
 6. Open **Billing → My projects**, find the new project, and copy its **Project ID**. Use the Project ID—not the display name—in commands and BigQuery table references.
