@@ -1,0 +1,4 @@
+customer_id,first_name,last_name,email,gender,address_city,address_state,loyalty_member
+1001,Ana,Popescu,ana@example.com,F,Bucharest,B,true
+1002,John,Smith,john@example.com,M,Seattle,WA,false
+1003,Maria,Ionescu,maria@example.com,F,Cluj,CJ,true
